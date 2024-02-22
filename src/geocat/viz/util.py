@@ -1568,7 +1568,7 @@ def get_skewt_vars(pressure: Quantity = None,
 
     Examples
     --------
-    All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
+    Usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
     - `NCL_skewt_2_2 <https://geocat-examples.readthedocs.io/en/latest/gallery/Skew-T/NCL_skewt_2_2.html?highlight=get_skewt_vars>`_
     """
