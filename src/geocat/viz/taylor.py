@@ -1,9 +1,11 @@
 """Taylor Diagrams."""
+
 import warnings
 import typing
 
 import numpy as np
-
+from packaging.version import Version
+from packaging.specifiers import SpecifierSet
 import xarray as xr
 
 import matplotlib
@@ -36,7 +38,7 @@ class TaylorDiagram(object):
         Optional subplot definition
 
     label : str
-        Optional reference label string indentifier
+        Optional reference label string identifier
 
     stdRange : tuple
         Optional stddev axis extent
@@ -56,13 +58,15 @@ class TaylorDiagram(object):
     - https://www.ncl.ucar.edu/Applications/taylor.shtml
     """
 
-    def __init__(self,
-                 refstd: float = 1,
-                 fig: matplotlib.figure.Figure = None,
-                 rect: int = 111,
-                 label: str = 'REF',
-                 std_range: tuple = (0, 1.65),
-                 std_level: list = np.arange(0, 1.51, 0.25)):
+    def __init__(
+        self,
+        refstd: float = 1,
+        fig: matplotlib.figure.Figure = None,
+        rect: int = 111,
+        label: str = 'REF',
+        std_range: tuple = (0, 1.65),
+        std_level: list = np.arange(0, 1.51, 0.25),
+    ):
         """Create base Taylor Diagram.
 
         Parameters
@@ -77,7 +81,7 @@ class TaylorDiagram(object):
             Optional subplot definition
 
         label : str
-            Optional reference label string indentifier
+            Optional reference label string identifier
 
         std_range : tuple
             Optional stddev axis extent
@@ -100,10 +104,16 @@ class TaylorDiagram(object):
         self.smax = std_range[1]
 
         # Set polar transform
-        tr = PolarAxes.PolarTransform()
+        mpl_version = Version(matplotlib.__version__)
+        if mpl_version in SpecifierSet("<3.9", prereleases=True):
+            tr = PolarAxes.PolarTransform(_apply_theta_transforms=False)
+        elif mpl_version in SpecifierSet("<3.11", prereleases=True):
+            tr = PolarAxes.PolarTransform(apply_theta_transforms=False)
+        else:
+            tr = PolarAxes.PolarTransform()
 
         # Set correlation labels
-        rlocs = np.concatenate((np.arange(10) / 10., [0.95, 0.99, 1]))
+        rlocs = np.concatenate((np.arange(10) / 10.0, [0.95, 0.99, 1]))
         tlocs = np.arccos(rlocs)  # Conversion to polar angles
         gl1 = gf.FixedLocator(tlocs)  # Positions
         tf1 = gf.DictFormatter(dict(list(zip(tlocs, list(map(str, rlocs))))))
@@ -124,11 +134,13 @@ class TaylorDiagram(object):
                 0,
                 np.pi / 2,  # 1st quadrant only
                 self.smin,
-                self.smax),
+                self.smax,
+            ),
             grid_locator1=gl1,
             tick_formatter1=tf1,
             grid_locator2=gl2,
-            tick_formatter2=tf2)
+            tick_formatter2=tf2,
+        )
 
         # Create graphical axes
         ax = fa.FloatingSubplot(self.fig, rect, grid_helper=ghelper)
@@ -166,12 +178,14 @@ class TaylorDiagram(object):
         # Add reference point stddev contour
         t_array = np.linspace(0, np.pi / 2)
         r_array = np.zeros_like(t_array) + self.refstd
-        h_plot, = self.ax.plot(t_array,
-                               r_array,
-                               linewidth=1,
-                               linestyle=(0, (9, 5)),
-                               color='black',
-                               zorder=1)
+        (h_plot,) = self.ax.plot(
+            t_array,
+            r_array,
+            linewidth=1,
+            linestyle=(0, (9, 5)),
+            color='black',
+            zorder=1,
+        )
 
         # Set aspect ratio
         self.ax.set_aspect('equal')
@@ -185,19 +199,19 @@ class TaylorDiagram(object):
         # Set number for models outside axes
         self.modelOutside = -1
 
-    def add_model_set(self,
-                      stddev: typing.Union[xr.DataArray, np.ndarray, list,
-                                           float],
-                      corrcoef: typing.Union[xr.DataArray, np.ndarray, list,
-                                             float],
-                      fontsize: float = 14,
-                      xytext: tuple = (-5, 7),
-                      annotate_on: bool = True,
-                      model_outlier_on: bool = False,
-                      percent_bias_on: bool = False,
-                      bias_array: bool = None,
-                      *args,
-                      **kwargs):
+    def add_model_set(
+        self,
+        stddev: typing.Union[xr.DataArray, np.ndarray, list, float],
+        corrcoef: typing.Union[xr.DataArray, np.ndarray, list, float],
+        fontsize: float = 14,
+        xytext: tuple = (-5, 7),
+        annotate_on: bool = True,
+        model_outlier_on: bool = False,
+        percent_bias_on: bool = False,
+        bias_array: bool = None,
+        *args,
+        **kwargs,
+    ):
         """Add a model set (*stddev*, *corrcoeff*) to the Taylor diagram. NCL-
         style model markers and labels are achieved through Matplotlib markers
         and annotations. *xytext* argument can be used to adjust the
@@ -214,7 +228,7 @@ class TaylorDiagram(object):
             Input should have the same size as *stddev*
 
         fontsize : float
-            Fonsize of marker labels. This argument is suplied to `matplotlib.axes.Axes.annotate` command. Optional. Default value 14.
+            Fonsize of marker labels. This argument is supplied to `matplotlib.axes.Axes.annotate` command. Optional. Default value 14.
 
         xytext : tuple(float, float)
             The position (x, y) to place the marker label at. The coordinate system is set to pixels.
@@ -297,7 +311,8 @@ class TaylorDiagram(object):
                 np.arccos(corr_plot),
                 std_plot,  # theta, radius
                 *args,
-                **kwargs)
+                **kwargs,
+            )
         else:
             for i in range(len(corr_plot)):
                 size, marker = self._bias_to_marker_size(bias_plot[i])
@@ -307,7 +322,8 @@ class TaylorDiagram(object):
                     s=size,
                     marker=marker,
                     *args,
-                    **kwargs)
+                    **kwargs,
+                )
 
         # grab color
         color = kwargs.get('color')
@@ -332,11 +348,14 @@ class TaylorDiagram(object):
         if annotate_on:
             for std, corr in zip(std_plot, corr_plot):
                 label = str(stdAndNumber[std])
-                textObject = self.ax.annotate(label, (np.arccos(corr), std),
-                                              fontsize=fontsize,
-                                              color=color,
-                                              textcoords="offset pixels",
-                                              xytext=xytext)
+                textObject = self.ax.annotate(
+                    label,
+                    (np.arccos(corr), std),
+                    fontsize=fontsize,
+                    color=color,
+                    textcoords="offset pixels",
+                    xytext=xytext,
+                )
                 modelTexts.append(textObject)
 
         # Plot outlier model stats
@@ -347,47 +366,56 @@ class TaylorDiagram(object):
 
                     # Plot markers
                     if not percent_bias_on:
-                        self.ax.scatter(0.054 + self.modelOutside * 0.22,
-                                        -0.105,
-                                        *args,
-                                        **kwargs,
-                                        clip_on=False,
-                                        transform=self.ax.transAxes)
+                        self.ax.scatter(
+                            0.054 + self.modelOutside * 0.22,
+                            -0.105,
+                            *args,
+                            **kwargs,
+                            clip_on=False,
+                            transform=self.ax.transAxes,
+                        )
                     else:
                         for i in range(len(bias_outlier)):
-                            size, marker = self._bias_to_marker_size(
-                                bias_outlier[i])
-                            self.ax.scatter(0.054 + self.modelOutside * 0.22,
-                                            -0.105,
-                                            *args,
-                                            **kwargs,
-                                            s=size,
-                                            marker=marker,
-                                            clip_on=False,
-                                            transform=self.ax.transAxes)
+                            size, marker = self._bias_to_marker_size(bias_outlier[i])
+                            self.ax.scatter(
+                                0.054 + self.modelOutside * 0.22,
+                                -0.105,
+                                *args,
+                                **kwargs,
+                                s=size,
+                                marker=marker,
+                                clip_on=False,
+                                transform=self.ax.transAxes,
+                            )
                     # Plot labels
-                    textObject = self.ax.text(0.045 + self.modelOutside * 0.22,
-                                              -0.08,
-                                              str(stdAndNumber[std]),
-                                              fontsize=fontsize,
-                                              transform=self.ax.transAxes)
+                    textObject = self.ax.text(
+                        0.045 + self.modelOutside * 0.22,
+                        -0.08,
+                        str(stdAndNumber[std]),
+                        fontsize=fontsize,
+                        transform=self.ax.transAxes,
+                    )
                     modelTexts.append(textObject)
 
                     # Plot std against corr in the form of fraction
-                    self.ax.text(0.08 + self.modelOutside * 0.22,
-                                 -0.10,
-                                 r'$\frac{%.2f}{%.2f}$' % (std, corr),
-                                 fontsize=17,
-                                 transform=self.ax.transAxes)
+                    self.ax.text(
+                        0.08 + self.modelOutside * 0.22,
+                        -0.10,
+                        r'$\frac{%.2f}{%.2f}$' % (std, corr),
+                        fontsize=17,
+                        transform=self.ax.transAxes,
+                    )
 
         return modelTexts, modelset
 
-    def add_corr_grid(self,
-                      arr: typing.Union[xr.DataArray, np.ndarray, list, float],
-                      color: str = 'lightgray',
-                      linestyle=(0, (9, 5)),
-                      linewidth: float = 0.5,
-                      **kwargs):
+    def add_corr_grid(
+        self,
+        arr: typing.Union[xr.DataArray, np.ndarray, list, float],
+        color: str = 'lightgray',
+        linestyle=(0, (9, 5)),
+        linewidth: float = 0.5,
+        **kwargs,
+    ):
         """Add gridlines to the correlation axis specified by array *arr*
 
         Parameters
@@ -420,20 +448,24 @@ class TaylorDiagram(object):
         """
 
         for value in arr:
-            self.ax.vlines([np.arccos(value)],
-                           ymin=self.smin,
-                           ymax=self.smax,
-                           color=color,
-                           linestyle=linestyle,
-                           linewidth=linewidth,
-                           **kwargs)
+            self.ax.vlines(
+                [np.arccos(value)],
+                ymin=self.smin,
+                ymax=self.smax,
+                color=color,
+                linestyle=linestyle,
+                linewidth=linewidth,
+                **kwargs,
+            )
 
-    def add_xgrid(self,
-                  arr: typing.Union[xr.DataArray, np.ndarray, list, float],
-                  color: str = 'lightgray',
-                  linestyle=(0, (9, 5)),
-                  linewidth: float = 0.5,
-                  **kwargs):
+    def add_xgrid(
+        self,
+        arr: typing.Union[xr.DataArray, np.ndarray, list, float],
+        color: str = 'lightgray',
+        linestyle=(0, (9, 5)),
+        linewidth: float = 0.5,
+        **kwargs,
+    ):
         """Add gridlines to the correlation axis specified by array *arr*.
 
         This method will be deprecated in favor of
@@ -442,16 +474,19 @@ class TaylorDiagram(object):
 
         warnings.warn(
             '`TaylorDiagram.add_xgrid` will be deprecated in the future. Please use `TaylorDiagram.add_corr_grid` instead.',
-            PendingDeprecationWarning)
+            PendingDeprecationWarning,
+        )
 
         return self.add_corr_grid(arr, color, linestyle, linewidth, **kwargs)
 
-    def add_std_grid(self,
-                     arr: typing.Union[xr.DataArray, np.ndarray, list, float],
-                     color: str = 'lightgray',
-                     linestyle=(0, (9, 5)),
-                     linewidth: int = 1,
-                     **kwargs):
+    def add_std_grid(
+        self,
+        arr: typing.Union[xr.DataArray, np.ndarray, list, float],
+        color: str = 'lightgray',
+        linestyle=(0, (9, 5)),
+        linewidth: int = 1,
+        **kwargs,
+    ):
         """Add radial gridlines to the standard deviation axis specified by
         array.
 
@@ -489,29 +524,35 @@ class TaylorDiagram(object):
         t_array = np.linspace(0, np.pi / 2)
         for value in arr:
             r_array = np.zeros_like(t_array) + value
-            h_plot, = self.ax.plot(t_array,
-                                   r_array,
-                                   color=color,
-                                   linestyle=linestyle,
-                                   linewidth=linewidth,
-                                   **kwargs)
+            (h_plot,) = self.ax.plot(
+                t_array,
+                r_array,
+                color=color,
+                linestyle=linestyle,
+                linewidth=linewidth,
+                **kwargs,
+            )
 
-    def add_ygrid(self,
-                  arr: typing.Union[xr.DataArray, np.ndarray, list, float],
-                  color: str = 'lightgray',
-                  linestyle=(0, (9, 5)),
-                  linewidth: int = 1,
-                  **kwargs):
+    def add_ygrid(
+        self,
+        arr: typing.Union[xr.DataArray, np.ndarray, list, float],
+        color: str = 'lightgray',
+        linestyle=(0, (9, 5)),
+        linewidth: int = 1,
+        **kwargs,
+    ):
         """Add gridlines to the standard deviation axis specified by array.
 
         *arr*.
 
-        This method will be deprecated in favor of `TaylorDiagram.add_std_grid()`
+        This method will be deprecated in favor of
+        `TaylorDiagram.add_std_grid()`
         """
 
         warnings.warn(
             '`TaylorDiagram.add_ygrid` will be deprecated in the future. Please use `TaylorDiagram.add_std_grid` instead.',
-            PendingDeprecationWarning)
+            PendingDeprecationWarning,
+        )
 
         return self.add_std_grid(arr, color, linestyle, linewidth, **kwargs)
 
@@ -524,10 +565,9 @@ class TaylorDiagram(object):
         """
         self._ax.grid(*args, **kwargs)
 
-    def add_contours(self,
-                     levels: typing.Union[xr.DataArray, np.ndarray, list,
-                                          int] = 5,
-                     **kwargs):
+    def add_contours(
+        self, levels: typing.Union[xr.DataArray, np.ndarray, list, int] = 5, **kwargs
+    ):
         """Add constant centered RMS difference contours.
 
         Parameters
@@ -551,25 +591,27 @@ class TaylorDiagram(object):
          - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_contours>`_
         """
         # Return coordinate matrices from coordinate vectors
-        rs, ts = np.meshgrid(np.linspace(self.smin, self.smax),
-                             np.linspace(0, np.pi / 2))
+        rs, ts = np.meshgrid(
+            np.linspace(self.smin, self.smax), np.linspace(0, np.pi / 2)
+        )
 
         # Compute centered RMS difference
-        rms = np.sqrt(self.refstd**2 + rs**2 -
-                      2 * self.refstd * rs * np.cos(ts))
+        rms = np.sqrt(self.refstd**2 + rs**2 - 2 * self.refstd * rs * np.cos(ts))
 
         # Create contour lines
         contours = self.ax.contour(ts, rs, rms, levels, **kwargs)
 
         return contours
 
-    def add_model_name(self,
-                       namearr: typing.Union[xr.DataArray, np.ndarray, list],
-                       x_loc: float = 0.1,
-                       y_loc: float = 0.31,
-                       verticalalignment: str = 'top',
-                       fontsize: float = 13,
-                       **kwargs):
+    def add_model_name(
+        self,
+        namearr: typing.Union[xr.DataArray, np.ndarray, list],
+        x_loc: float = 0.1,
+        y_loc: float = 0.31,
+        verticalalignment: str = 'top',
+        fontsize: float = 13,
+        **kwargs,
+    ):
         """Add texts of model names.
 
         The coordinate system of the Axes(transAxes) is used for more intuitive positioning of the texts.
@@ -612,13 +654,15 @@ class TaylorDiagram(object):
         text = [str(i + 1) + ' - ' + namearr[i] for i in range(len(namearr))]
         text = '\n'.join(text)
 
-        self.ax.text(x_loc,
-                     y_loc,
-                     text,
-                     verticalalignment=verticalalignment,
-                     fontsize=fontsize,
-                     transform=self.ax.transAxes,
-                     **kwargs)
+        self.ax.text(
+            x_loc,
+            y_loc,
+            text,
+            verticalalignment=verticalalignment,
+            fontsize=fontsize,
+            transform=self.ax.transAxes,
+            **kwargs,
+        )
 
     def add_bias_legend(self):
         """Add bias legend to the upper left hand corner.
@@ -632,12 +676,14 @@ class TaylorDiagram(object):
         text = "-  /  +     Bias\n"
         percent = [">20%", "10-20%", "5-10%", "1-5%", "<1%"]
 
-        self.ax.text(0.07,
-                     0.92,
-                     text,
-                     fontsize=11,
-                     verticalalignment="top",
-                     transform=self.ax.transAxes)
+        self.ax.text(
+            0.07,
+            0.92,
+            text,
+            fontsize=11,
+            verticalalignment="top",
+            transform=self.ax.transAxes,
+        )
 
         y_loc = 0.87
         size = [130, 90, 50, 30, 60]
@@ -647,36 +693,40 @@ class TaylorDiagram(object):
             if i == 4:
                 marker1 = "o"
                 marker2 = "o"
-            self.ax.scatter(0.08,
-                            y_loc,
-                            s=size[i],
-                            marker=marker1,
-                            edgecolors='black',
-                            facecolors="None",
-                            linewidths=0.5,
-                            transform=self.ax.transAxes)
-            self.ax.scatter(0.13,
-                            y_loc,
-                            s=size[i],
-                            marker=marker2,
-                            edgecolors='black',
-                            facecolors="None",
-                            linewidths=0.5,
-                            transform=self.ax.transAxes)
-            self.ax.text(0.18,
-                         y_loc - 0.01,
-                         percent[i],
-                         fontsize=11,
-                         transform=self.ax.transAxes)
+            self.ax.scatter(
+                0.08,
+                y_loc,
+                s=size[i],
+                marker=marker1,
+                edgecolors='black',
+                facecolors="None",
+                linewidths=0.5,
+                transform=self.ax.transAxes,
+            )
+            self.ax.scatter(
+                0.13,
+                y_loc,
+                s=size[i],
+                marker=marker2,
+                edgecolors='black',
+                facecolors="None",
+                linewidths=0.5,
+                transform=self.ax.transAxes,
+            )
+            self.ax.text(
+                0.18, y_loc - 0.01, percent[i], fontsize=11, transform=self.ax.transAxes
+            )
 
             y_loc -= 0.04
 
-    def add_legend(self,
-                   xloc: float = 1.1,
-                   yloc: float = 0.95,
-                   loc: str = "upper right",
-                   fontsize: float = 14,
-                   **kwargs):
+    def add_legend(
+        self,
+        xloc: float = 1.1,
+        yloc: float = 0.95,
+        loc: str = "upper right",
+        fontsize: float = 14,
+        **kwargs,
+    ):
         """Add a figure legend.
 
         The coordinate system is Axes(transAxes).
@@ -718,19 +768,19 @@ class TaylorDiagram(object):
         if kwargs.get('labels') is None:
             labels = [p.get_label() for p in handles]
 
-        legend = self.ax.legend(handles,
-                                labels,
-                                loc=loc,
-                                bbox_to_anchor=(xloc, yloc),
-                                fontsize=fontsize,
-                                frameon=False)
+        legend = self._ax.legend(
+            handles,
+            labels,
+            loc=loc,
+            bbox_to_anchor=(xloc, yloc),
+            fontsize=fontsize,
+            frameon=False,
+        )
         return legend
 
-    def add_title(self,
-                  maintitle: str,
-                  fontsize: float = 18,
-                  y_loc: float = None,
-                  **kwargs):
+    def add_title(
+        self, maintitle: str, fontsize: float = 18, y_loc: float = None, **kwargs
+    ):
         """Add a main title.
 
         Parameters
@@ -761,10 +811,12 @@ class TaylorDiagram(object):
 
         self._ax.set_title(maintitle, fontsize=fontsize, y=y_loc, **kwargs)
 
-    def set_fontsizes_and_pad(self,
-                              ticklabel_fontsize: float = 14,
-                              axislabel_fontsize: float = 16,
-                              axislabel_pad: float = 8):
+    def set_fontsizes_and_pad(
+        self,
+        ticklabel_fontsize: float = 14,
+        axislabel_fontsize: float = 16,
+        axislabel_pad: float = 8,
+    ):
         """Reset ticklabel and axis label fontsizes, and axis label padding.
 
         Parameters
@@ -789,8 +841,9 @@ class TaylorDiagram(object):
         - `NCL_taylor_6.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_6.html?highlight=set_fontsize_and_pad>`_
         """
 
-        self._ax.axis['top', 'right',
-                      'left'].major_ticklabels.set_fontsize(ticklabel_fontsize)
+        self._ax.axis['top', 'right', 'left'].major_ticklabels.set_fontsize(
+            ticklabel_fontsize
+        )
         self._ax.axis['top', 'right'].label.set_fontsize(axislabel_fontsize)
         self._ax.axis['top', 'right'].label.set_pad(axislabel_pad)
 
@@ -802,7 +855,7 @@ class TaylorDiagram(object):
         Parameters
         ----------
         bias : int, float
-            Bais value to dictate the size of the marker size and string marker
+            Bias value to dictate the size of the marker size and string marker
 
         Returns
         -------

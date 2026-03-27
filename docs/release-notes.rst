@@ -5,19 +5,88 @@
 Release Notes
 =============
 
-v2024.07.0 (unreleased)
----------------------------
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+Testing
+^^^^^^^
+* Manually specify contour levels in tests by `Katelyn FitzGerald`_ in (:pr:`321`)
+
+Documentation
+^^^^^^^^^^^^^
+* Fix color specification in `plot_contour_labels.ipynb` and Intersphinx configuration by `Katelyn FitzGerald`_ in (:pr:`321`)
+* Update logos and color schemes by `Anissa Zacharias`_ in (:pr:`335`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Remove M1 workaround for CI and tokens that are no longer needed by `Katelyn FitzGerald`_ in (:pr:`232`)
+* Group Dependabot updates by `Katelyn FitzGerald`_ in (:pr:`323`)
+
+v2025.07.0 (July 16, 2025)
+--------------------------
+This release includes a number of internal testing and packaging updates as well as improved Matplotlib compatibility.
+
+Documentation
+^^^^^^^^^^^^^
+* Remove reference to NCAR/geocat repo from support page by `Katelyn FitzGerald`_ in (:pr:`293`)
+
+Enhancements
+^^^^^^^^^^^^
+* Adapt Taylor diagram code for compatibility with Matplotlib 3.11 by `Katelyn FitzGerald`_ in (:pr:`308`, :pr:`309`)
+
+Testing
+^^^^^^^
+* Add minimum dependency version testing and address minor compatibility issues with Matplotlib by `Katelyn FitzGerald`_ in (:pr:`291`)
+* Move to setup-micromamba for environments in CI by `Katelyn FitzGerald`_ in (:pr:`294`)
+* Adapt tests to accommodate upstream changes in MetPy for LCL and CAPE by `Katelyn FitzGerald`_ in (:pr:`299`, :pr:`300`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Streamlines packaging and configuration by `Katelyn FitzGerald`_ in (:pr:`311`)
+* Update PyPI workflow to use build rather than setup.py by `Katelyn FitzGerald`_ in (:pr:`290`)
+* Update pins for third party GitHub Actions per new guidance by `Katelyn FitzGerald`_ in (:pr:`297`)
+* Transition formatting to `ruff` and `blackdoc` by `Cora Schneck`_ in (:pr:`302`)
+
+
+v2025.03.0 (March 28, 2025)
+---------------------------
+This release adds testing infrastructure and significant test coverage, adds support and testing for Python 3.13, drops Python 3.9, and addresses some minor documentation and Matplotlib compatibility issues.
+
+Enhancements
+^^^^^^^^^^^^
+* Added Python 3.13 support and testing by `Katelyn FitzGerald`_ in (:pr:`278`)
+
+Bug Fixes
+^^^^^^^^^
+* Change Taylor diagram legend to be specified on the graphical axes to address legend location issues by `Katelyn FitzGerald`_ in (:pr:`274`)
+
+Documentation
+^^^^^^^^^^^^^
+* Remove link to broken ``NCL_vector_5.py`` example by `Katelyn FitzGerald`_ in (:pr:`249`)
+* Fix documentation theme configuration by `Katelyn FitzGerald`_ in (:pr:`253`)
+* Minor updates and removal of broken link on citation page by `Katelyn FitzGerald`_ in (:pr:`260`)
+* Fix broken link to Taylor Diagram documentation from usage example by `Katelyn FitzGerald`_ in (:pr:`270`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update pre-commit versions and configuration by `Katelyn FitzGerald`_ in (:pr:`247`)
+* Remove M1 workaround and minor CI maintenance by `Katelyn FitzGerald`_ in (:pr:`232`)
+* Modify tests to avoid an Xarray bug and turn on image comparison testing by `Katelyn FitzGerald`_ in (:pr:`257`)
+* Configure analytics by `Katelyn FitzGerald`_ in (:pr:`277`)
+* Set ``apply_theta_transforms=False`` to adopt future behavior and silence warnings from ``matplotlib.projections.PolarAxes.PolarTransform()`` by `Katelyn FitzGerald`_ in (:pr:`279`)
 
 Testing
 ^^^^^^^
 * Add basic testing infrastructure by `Katelyn FitzGerald`_ and `Julia Kent`_ in (:pr:`233`)
-* Add tests for `viz.taylor` by `Julia Kent`_ in (:pr:`234`)
-* Add tests for `viz.util` by `Julia Kent`_ in (:pr:`239`)
-* Remove now duplicative macOS runner from CI and add back in Python 3.10 by `Katelyn FitzGerald`_ in (:pr:`240`)
+* Add tests for ``viz.taylor`` by `Julia Kent`_ in (:pr:`234`)
+* Add tests for ``viz.util`` by `Julia Kent`_ in (:pr:`239`)
+* Remove duplicative macOS runner from CI and add Python 3.10 by `Katelyn FitzGerald`_ in (:pr:`240`)
+* Set docs configuration to raise an error following errors in notebook builds by `Katelyn FitzGerald`_ in (:pr:`280`)
+* Add upstream dev CI by `Katelyn FitzGerald`_ in (:pr:`282`)
+
+Maintenance
+^^^^^^^^^^^
+* Require ``matplotlib-base`` instead of ``matplotlib`` and minor dependency cleanup by `Katelyn FitzGerald`_ in (:pr:`284`)
 
 
 v2024.03.0 (March 26, 2024)
@@ -32,7 +101,6 @@ Documentation
 Deprecations
 ^^^^^^^^^^
 * Pending deprecation warnings added for ``TaylorDiagram`` methods ``add_xgrid`` and ``add_ygrid`` which are changing to the new ``add_corr_grid`` and ``add_std_grid`` by `Julia Kent`_ in (:pr:`219`)
-
 
 v2024.02.1 (February 28, 2024)
 ------------------------------
@@ -104,7 +172,6 @@ Documentation
 ^^^^^^^^^^^^^
 * Additions to the examples gallery for ``find_local_extrema()``, ``plot_contour_labels()``, and ``plot_extrema_labels()`` by `Julia Kent`_ in (:pr:`145`)
 
-
 v2023.07.0 (July 6, 2023)
 -------------------------
 
@@ -126,7 +193,7 @@ Function and keyword argument names have been adjusted to follow consistent form
 
 Deprecations
 ^^^^^^^^^^^^
-* Some functions reanmed (``findLocalExtrema`` -> ``find_local_extrema``, ``plotCLabels`` -> ``plot_contour_labels``, and ``plotELabels`` -> ``plot_extrema_labels``) and keyword arguments renamed in ``get_skewt_vars`` by `Julia Kent`_ in (:pr:`127`)
+* Some functions renamed (``findLocalExtrema`` -> ``find_local_extrema``, ``plotCLabels`` -> ``plot_contour_labels``, and ``plotELabels`` -> ``plot_extrema_labels``) and keyword arguments renamed in ``get_skewt_vars`` by `Julia Kent`_ in (:pr:`127`)
 
 Bug Fixes
 ^^^^^^^^^
@@ -155,3 +222,4 @@ Documentation
 .. _`Simon Rosanka`: https://github.com/srosanka
 .. _`Orhan Eroglu`: https://github.com/erogluorhan
 .. _`Anissa Zacharias`: https://github.com/anissa111
+.. _`Cora Schneck`: https://github.com/cyschneck
