@@ -220,7 +220,6 @@ html_theme_options = {
     "use_repository_button": True,
     "use_issues_button": True,
     "home_page_in_toc": False,
-    "navbar_footer_text": "",
     "logo": {
         "image_light": '_static/images/logos/NSF_NCAR_light.png',
         "image_dark": '_static/images/logos/NSF_NCAR_dark.png',
@@ -363,7 +362,11 @@ nb_execution_raise_on_error = True
 # nitpicky = True
 
 # add links to ignore during link checking
-linkcheck_ignore = [r'https://stackoverflow.com/*', r'https://zenodo.org/search*']
+linkcheck_ignore = [
+    r'https://stackoverflow.com/*',
+    r'https://zenodo.org/search*',
+    r'https://github.com/signup/free',  # 403 error in CI
+]
 
 
 # Allow for changes to be made to the css in the theme_overrides file

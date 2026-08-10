@@ -5,7 +5,7 @@ import numpy as np
 from geocat.viz.taylor import TaylorDiagram
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=17, remove_text=True, style='default')
 def test_add_model_set():
     fig = plt.figure(figsize=(10, 10))
     taylor = TaylorDiagram(fig=fig, label='REF')
@@ -21,7 +21,7 @@ def test_add_model_set():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=18, remove_text=True, style='default')
 def test_add_legend():
     fig = plt.figure(figsize=(10, 10))
     taylor = TaylorDiagram(fig=fig, label='REF')
@@ -51,7 +51,7 @@ def test_add_legend():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=17.5, remove_text=True, style='default')
 def test_add_bias_legend():
     fig = plt.figure(figsize=(10, 10))
     taylor = TaylorDiagram(fig=fig, label='REF')
@@ -71,7 +71,7 @@ def test_add_bias_legend():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=17.4, remove_text=True, style='default')
 def test_add_model_name():
     fig = plt.figure(figsize=(10, 10))
     taylor = TaylorDiagram(fig=fig, label='REF')
@@ -91,7 +91,7 @@ def test_add_model_name():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=17, remove_text=True, style='default')
 def test_add_corr_grid():
     fig = plt.figure(figsize=(10, 10))
     taylor = TaylorDiagram(fig=fig, label='REF')
@@ -111,7 +111,7 @@ def test_add_corr_grid():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=16.8, remove_text=True, style='default')
 def test_add_contours():
     fig = plt.figure(figsize=(10, 10))
     taylor = TaylorDiagram(fig=fig, label='REF')

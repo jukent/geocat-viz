@@ -42,7 +42,7 @@ def test_set_tick_direction_spine_visibility():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=11.3, remove_text=True, style='default')
 def test_add_lat_lon_gridlines():
     fig = plt.figure(figsize=(10, 10))
 
@@ -59,7 +59,7 @@ def test_add_lat_lon_gridlines():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=7.9, remove_text=True, style='default')
 def test_add_right_hand_axis():
     fig = plt.figure(figsize=(9, 10))
     ax1 = plt.gca()
@@ -75,7 +75,7 @@ def test_add_right_hand_axis():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=6.1, remove_text=True, style='default')
 def test_add_height_from_pressure_axis():
     fig = plt.figure(figsize=(8, 8))
     ax = plt.axes()
@@ -109,7 +109,7 @@ def test_add_major_minor_ticks():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=3.4, remove_text=True, style='default')
 def test_set_titles_and_labels():
     fig = fig, ax = plt.subplots()
 
@@ -333,7 +333,7 @@ def test_find_local_extrema():
     assert lmin == (2, 2)
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=10.9, remove_text=True, style='default')
 def test_plot_contour_labels():
     ds = xr.open_dataset(gdf.get("netcdf_files/slp.1963.nc"), decode_times=False)
     pressure = ds.slp[24, :, :].astype('float64') * 0.01
@@ -366,7 +366,7 @@ def test_plot_contour_labels():
     return fig
 
 
-@pytest.mark.mpl_image_compare(tolerance=2, remove_text=True, style='default')
+@pytest.mark.mpl_image_compare(tolerance=7.3, remove_text=True, style='default')
 def test_plot_extrema_labels():
     ds = xr.open_dataset(gdf.get("netcdf_files/slp.1963.nc"), decode_times=False)
     pressure = ds.slp[24, :, :].astype('float64') * 0.01

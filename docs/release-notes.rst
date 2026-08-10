@@ -11,6 +11,7 @@ This release...
 
 Testing
 ^^^^^^^
+* Increase image test tolerances to support Matplotlib 3.11 by `Katelyn FitzGerald`_ in (:pr:`363`)
 * Manually specify contour levels in tests by `Katelyn FitzGerald`_ in (:pr:`321`)
 
 Documentation
@@ -21,6 +22,8 @@ Documentation
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Group Dependabot updates by `Katelyn FitzGerald`_ in (:pr:`323`)
+* Automatic issue generation for CI Upstream failure by `Katelyn FitzGerald`_ in (:pr:`348`, :pr:`351`)
+* Address docs warnings and adjust CI Upstream runs by `Katelyn FitzGerald`_ in (:pr:`366`, :pr:`367`)
 
 v2025.07.0 (July 16, 2025)
 --------------------------
@@ -99,7 +102,7 @@ Documentation
 * Document known issue with `suptitle` argument of  ``set_titles_and_labels`` and Cartopy plots by `Julia Kent`_ in (:pr:`219`)
 
 Deprecations
-^^^^^^^^^^
+^^^^^^^^^^^^
 * Pending deprecation warnings added for ``TaylorDiagram`` methods ``add_xgrid`` and ``add_ygrid`` which are changing to the new ``add_corr_grid`` and ``add_std_grid`` by `Julia Kent`_ in (:pr:`219`)
 
 v2024.02.1 (February 28, 2024)
@@ -178,7 +181,7 @@ v2023.07.0 (July 6, 2023)
 Matplotlib unpinned and an examples gallery added.
 
 Bug Fixes
-^^^^^^^^^^^^
+^^^^^^^^^
 * Matplotlib unpinned by `Katelyn Fitzgerald`_ in (:pr:`134`)
 
 Documentation

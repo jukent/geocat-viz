@@ -162,10 +162,12 @@ class TaylorDiagram(object):
         ax.axis["right"].major_ticklabels.set_axis_direction("left")
         ax.axis["right"].label.set_text("Standard deviation (Normalized)")
 
-        # Set font sizes, tick sizes, and padding
+        # Set font sizes, tick settings, and padding
         ax.axis['top', 'right'].label.set_fontsize(18)
         ax.axis['top', 'right', 'left'].major_ticklabels.set_fontsize(16)
         ax.axis['top', 'right', 'left'].major_ticks.set_ticksize(10)
+        if mpl_version in SpecifierSet(">=3.11", prereleases=True):
+            ax.axis['top', 'right', 'left'].major_ticks.set_tick_direction("in")
         ax.axis['top', 'right', 'left'].major_ticklabels.set_pad(8)
         ax.axis['top', 'right'].label.set_pad(6)
 
@@ -266,7 +268,7 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-        - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_model_set>`_
+        - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_model_set>`__
         """
 
         # Convert to np arrays and make copies
@@ -444,7 +446,7 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-        - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_corr_grid>`_
+        - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_corr_grid>`__
         """
 
         for value in arr:
@@ -518,7 +520,7 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-         - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_std_grid>`_
+         - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_std_grid>`__
         """
 
         t_array = np.linspace(0, np.pi / 2)
@@ -588,7 +590,7 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-         - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_contours>`_
+         - `NCL_taylor_2.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_2.html?highlight=add_contours>`__
         """
         # Return coordinate matrices from coordinate vectors
         rs, ts = np.meshgrid(
@@ -646,9 +648,9 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-        - `NCL_taylor_3.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_3.html?highlight=add_model_name>`_
+        - `NCL_taylor_3.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_3.html?highlight=add_model_name>`__
 
-        - `NCL_taylor_6.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_6.html?highlight=add_model_name>`_
+        - `NCL_taylor_6.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_6.html?highlight=add_model_name>`__
         """
 
         text = [str(i + 1) + ' - ' + namearr[i] for i in range(len(namearr))]
@@ -760,7 +762,7 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-        - `NCL_taylor_3.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_3.html?highlight=add_legend>`_
+        - `NCL_taylor_3.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_3.html?highlight=add_legend>`__
         """
 
         if kwargs.get('handles') is None:
@@ -806,7 +808,7 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-        - `NCL_taylor_6.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_6.html?highlight=add_title>`_
+        - `NCL_taylor_6.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_6.html?highlight=add_title>`__
         """
 
         self._ax.set_title(maintitle, fontsize=fontsize, y=y_loc, **kwargs)
@@ -838,7 +840,7 @@ class TaylorDiagram(object):
         --------
         All usage examples are within the GeoCAT-Examples Gallery. To see more usage cases, search the function on the `website <https://geocat-examples.readthedocs.io/en/latest/index.html>`_.
 
-        - `NCL_taylor_6.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_6.html?highlight=set_fontsize_and_pad>`_
+        - `NCL_taylor_6.py <https://geocat-examples.readthedocs.io/en/latest/gallery/TaylorDiagrams/NCL_taylor_6.html?highlight=set_fontsize_and_pad>`__
         """
 
         self._ax.axis['top', 'right', 'left'].major_ticklabels.set_fontsize(
